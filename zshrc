@@ -59,45 +59,6 @@ lessjson() {
     cat $1 | prettyjson | pygmentize -l javascript | less -R
 }
 
-fbgf() {
-    find $HOME/code/WayveCode | grep -E $1
-}
-
-fbgs() {
-    grep -nr -E $1 $HOME/code/WayveCode
-}
-
-devserver() {
-    IP_ADDR=$(az vm list-ip-addresses -g rg-prod-workstations -n vm-prod-workstation-holbox --query "[*].virtualMachine.network.privateIpAddresses[0]" -o tsv)
-    mosh $IP_ADDR
-}
-
-holbox-status() {
-    query_str="[?name=='vm-prod-workstation-holbox']"
-    az vm list -d -o table --query "$query_str" -g rg-prod-workstations
-}
-
-holbox-off() {
-    az vm deallocate -g rg-prod-workstations -n vm-prod-workstation-holbox
-}
-
-holbox-on() {
-    az vm start -g rg-prod-workstations -n vm-prod-workstation-holbox
-}
-
-remote-car() {
-    ssh wayve@catalonia.wayve.ai -p 1234
-}
-
-remote-proxy() {
-    ssh -N -D 9090 wayve@catalonia.wayve.ai -p 1234
-}
-
-remote-chrome() {
-    /usr/bin/google-chrome \
-        --user-data-dir="$HOME/proxy-profile" \
-        --proxy-server="socks5://localhost:9090"
-}
 
 phone-home() {
     mosh -p 55165 --ssh="ssh -p 283" home.rdelfin.com
@@ -152,4 +113,5 @@ compdef _gt_yargs_completions gt
 # tabtab source for electron-forge package
 # uninstall by removing these lines or running `tabtab uninstall electron-forge`
 [[ -f /home/rdelfin/code/review-dashboard/node_modules/tabtab/.completions/electron-forge.zsh ]] && . /home/rdelfin/code/review-dashboard/node_modules/tabtab/.completions/electron-forge.zsh
+
 export PATH="/home/rdelfin/.pixi/bin:$PATH"
