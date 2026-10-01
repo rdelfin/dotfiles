@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+
+INIT=/usr/share/regolith-compositor/init
+
+# Put Regolith's script back once ours is gone.
+if [ "$1" = remove ] || [ "$1" = abort-install ] || [ "$1" = abort-upgrade ]; then
+    if dpkg-divert --list picom-autowakeup | grep -q "$INIT"; then
+        dpkg-divert --package picom-autowakeup --remove --rename "$INIT"
+    fi
+fi

@@ -1,0 +1,12 @@
+#!/bin/sh
+set -e
+
+INIT=/usr/share/regolith-compositor/init
+
+# Move Regolith's script aside so ours can take its path.
+if [ "$1" = install ] || [ "$1" = upgrade ]; then
+    if ! dpkg-divert --list picom-autowakeup | grep -q "$INIT"; then
+        dpkg-divert --package picom-autowakeup --add --rename \
+            --divert "$INIT.regolith" "$INIT"
+    fi
+fi

@@ -1,0 +1,4 @@
+#!/bin/bash
+# Regolith runs this on every i3 start and reload. Starting an active unit does nothing.
+systemctl --user reset-failed picom.service
+exec systemctl --user start picom.service

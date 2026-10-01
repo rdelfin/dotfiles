@@ -1,0 +1,9 @@
+#!/bin/bash
+# Config order: user file, then the Regolith X resource, then the system default.
+USER_CONFIG="$HOME/.config/regolith3/picom/config"
+if [[ -f "$USER_CONFIG" ]]; then
+    CONFIG_PATH="$USER_CONFIG"
+else
+    CONFIG_PATH=$(xrescat regolith.compositor.picom.config /etc/regolith/picom/config)
+fi
+exec /usr/bin/picom --config "$CONFIG_PATH"

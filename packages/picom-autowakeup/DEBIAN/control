@@ -1,0 +1,11 @@
+Package: picom-autowakeup
+Version: 0.1.0
+Section: x11
+Priority: optional
+Architecture: all
+Depends: picom, regolith-compositor-picom-glx, systemd
+Maintainer: Ricardo Delfin <me@rdelfin.com>
+Description: Run picom as a systemd user service under Regolith
+ Replaces Regolith's compositor start script with one that starts
+ picom.service. systemd keeps a single picom running and restarts it
+ on failure, so reloading i3 no longer kills and respawns the compositor.

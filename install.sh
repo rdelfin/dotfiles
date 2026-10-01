@@ -9,6 +9,10 @@ OH_MY_ZSH_DIR="${ZSH:-$HOME/.oh-my-zsh}"
 OH_MY_ZSH_REPO="https://github.com/ohmyzsh/ohmyzsh.git"
 BACKUP_SUFFIX=".bak.$(date +%Y%m%d%H%M%S)"
 REQUIRED_COMMANDS=(git zsh tmux pipx)
+PICOM_PACKAGE_DIR="$REPO_DIR/packages/picom-autowakeup"
+PICOM_PACKAGE_NAME="picom-autowakeup"
+REGOLITH_COMPOSITOR_PACKAGE="regolith-compositor-picom-glx"
+BUILD_DIR="$REPO_DIR/build"
 
 require_commands() {
     local missing=()
@@ -73,6 +77,17 @@ install_powerline() {
     pipx install powerline-status
 }
 
+# Needs sudo. Only applies to machines that run Regolith.
+install_picom_package() {
+    if ! dpkg -s "$REGOLITH_COMPOSITOR_PACKAGE" >/dev/null 2>&1; then
+        echo "skip    $PICOM_PACKAGE_NAME ($REGOLITH_COMPOSITOR_PACKAGE is not installed)"
+        return
+    fi
+    rm -f "$BUILD_DIR/${PICOM_PACKAGE_NAME}_"*.deb
+    "$REPO_DIR/packages/build-deb.sh" "$PICOM_PACKAGE_DIR" "$BUILD_DIR"
+    sudo apt-get install -y --reinstall "$BUILD_DIR/${PICOM_PACKAGE_NAME}_"*_all.deb
+}
+
 # Top-level files are linked as-is. For skills/, commands/ and agents/,
 # each child is linked, so tools can still add their own entries there.
 install_claude_config() {
@@ -96,4 +111,5 @@ require_commands
 install_oh_my_zsh
 install_powerline
 install_shell_configs
+install_picom_package
 install_claude_config
