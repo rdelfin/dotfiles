@@ -16,11 +16,7 @@ plugins=(git tmux mercurial)
 
 source $ZSH/oh-my-zsh.sh
 
-export PATH=$HOME/.local/bin:$PATH
-export PATH=$PATH:/home/rdelfin/.gem/ruby/2.5.0/bin:
-export PATH="$PATH:${KREW_ROOT:-$HOME/.krew}/bin"
-export PATH=$PATH:$HOME/.cargo/bin
-export PATH=$PATH:/usr/local/go/bin
+export PATH=/home/rdelfin/.local/bin:$PATH
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
@@ -109,9 +105,5 @@ compdef _gt_yargs_completions gt
 
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# tabtab source for electron-forge package
-# uninstall by removing these lines or running `tabtab uninstall electron-forge`
-[[ -f /home/rdelfin/code/review-dashboard/node_modules/tabtab/.completions/electron-forge.zsh ]] && . /home/rdelfin/code/review-dashboard/node_modules/tabtab/.completions/electron-forge.zsh
 
 export PATH="/home/rdelfin/.pixi/bin:$PATH"
