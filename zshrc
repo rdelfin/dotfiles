@@ -16,10 +16,10 @@ plugins=(git tmux mercurial)
 
 source $ZSH/oh-my-zsh.sh
 
+export PATH=$HOME/.local/bin:$PATH
 export PATH=$PATH:/home/rdelfin/.gem/ruby/2.5.0/bin:
 export PATH="$PATH:${KREW_ROOT:-$HOME/.krew}/bin"
 export PATH=$PATH:$HOME/.cargo/bin
-export PATH=$PATH:/home/rdelfin/.local/bin
 export PATH=$PATH:/usr/local/go/bin
 
 # You may need to manually set your language environment
