@@ -26,6 +26,14 @@ require_commands() {
   fi
 }
 
+create_folders_if_missing() {
+  local folder="$1"
+  if [[ ! -d "$folder" ]]; then
+    mkdir -p "$folder"
+    echo "mkdir   $folder"
+  fi
+}
+
 backup_if_present() {
   local path="$1"
   if [[ -e "$path" || -L "$path" ]]; then
@@ -54,6 +62,14 @@ copy_file() {
   backup_if_present "$dest"
   cp "$src" "$dest"
   echo "copy    $src -> $dest"
+}
+
+install_regolith_configs() {
+  create_folders_if_missing "$HOME/.config/regolith3"
+  create_folders_if_missing "$HOME/.config/regolith3/i3status-rust"
+
+  link "$REPO_DIR/regolith/Xresources" "$HOME/.config/regolith3/Xresources"
+  link "$REPO_DIR/regolith/i3status-rust/config.toml" "$HOME/.config/regolith3/i3status-rust/config.toml"
 }
 
 install_shell_configs() {
@@ -113,3 +129,4 @@ install_powerline
 install_shell_configs
 install_picom_package
 install_claude_config
+install_regolith_configs

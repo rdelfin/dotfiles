@@ -1,0 +1,6 @@
+!regolith.look.path: /usr/share/regolith-look/nevil
+regolith.look.path: /usr/share/regolith-look/dracula
+
+regolith.sway.unsupported_gpu: true
+
+wm.bar.status_config: /home/rdelfin/.config/regolith3/i3status-rust/config.toml
