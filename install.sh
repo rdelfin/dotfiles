@@ -15,96 +15,96 @@ REGOLITH_COMPOSITOR_PACKAGE="regolith-compositor-picom-glx"
 BUILD_DIR="$REPO_DIR/build"
 
 require_commands() {
-    local missing=()
-    for cmd in "${REQUIRED_COMMANDS[@]}"; do
-        command -v "$cmd" >/dev/null || missing+=("$cmd")
-    done
-    if ((${#missing[@]})); then
-        echo "Missing commands: ${missing[*]}" >&2
-        echo "Install them first, e.g.: sudo apt install git zsh tmux pipx" >&2
-        exit 1
-    fi
+  local missing=()
+  for cmd in "${REQUIRED_COMMANDS[@]}"; do
+    command -v "$cmd" >/dev/null || missing+=("$cmd")
+  done
+  if ((${#missing[@]})); then
+    echo "Missing commands: ${missing[*]}" >&2
+    echo "Install them first, e.g.: sudo apt install git zsh tmux pipx" >&2
+    exit 1
+  fi
 }
 
 backup_if_present() {
-    local path="$1"
-    if [[ -e "$path" || -L "$path" ]]; then
-        mv "$path" "$path$BACKUP_SUFFIX"
-        echo "backup  $path -> $path$BACKUP_SUFFIX"
-    fi
+  local path="$1"
+  if [[ -e "$path" || -L "$path" ]]; then
+    mv "$path" "$path$BACKUP_SUFFIX"
+    echo "backup  $path -> $path$BACKUP_SUFFIX"
+  fi
 }
 
 link() {
-    local src="$1" dest="$2"
-    if [[ -L "$dest" && "$(readlink "$dest")" == "$src" ]]; then
-        echo "ok      $dest"
-        return
-    fi
-    backup_if_present "$dest"
-    ln -s "$src" "$dest"
-    echo "link    $dest -> $src"
+  local src="$1" dest="$2"
+  if [[ -L "$dest" && "$(readlink "$dest")" == "$src" ]]; then
+    echo "ok      $dest"
+    return
+  fi
+  backup_if_present "$dest"
+  ln -s "$src" "$dest"
+  echo "link    $dest -> $src"
 }
 
 copy_file() {
-    local src="$1" dest="$2"
-    if [[ -f "$dest" && ! -L "$dest" ]] && cmp -s "$src" "$dest"; then
-        echo "ok      $dest"
-        return
-    fi
-    backup_if_present "$dest"
-    cp "$src" "$dest"
-    echo "copy    $src -> $dest"
+  local src="$1" dest="$2"
+  if [[ -f "$dest" && ! -L "$dest" ]] && cmp -s "$src" "$dest"; then
+    echo "ok      $dest"
+    return
+  fi
+  backup_if_present "$dest"
+  cp "$src" "$dest"
+  echo "copy    $src -> $dest"
 }
 
 install_shell_configs() {
-    copy_file "$REPO_DIR/zshrc" "$HOME/.zshrc"
-    copy_file "$REPO_DIR/tmux.conf" "$HOME/.tmux.conf"
+  copy_file "$REPO_DIR/zshrc" "$HOME/.zshrc"
+  copy_file "$REPO_DIR/tmux.conf" "$HOME/.tmux.conf"
 }
 
 install_oh_my_zsh() {
-    if [[ -d "$OH_MY_ZSH_DIR" ]]; then
-        echo "ok      $OH_MY_ZSH_DIR"
-        return
-    fi
-    git clone --depth 1 "$OH_MY_ZSH_REPO" "$OH_MY_ZSH_DIR"
+  if [[ -d "$OH_MY_ZSH_DIR" ]]; then
+    echo "ok      $OH_MY_ZSH_DIR"
+    return
+  fi
+  git clone --depth 1 "$OH_MY_ZSH_REPO" "$OH_MY_ZSH_DIR"
 }
 
 install_powerline() {
-    if pipx list --short | grep -q '^powerline-status '; then
-        echo "ok      powerline-status"
-        return
-    fi
-    pipx install powerline-status
+  if pipx list --short | grep -q '^powerline-status '; then
+    echo "ok      powerline-status"
+    return
+  fi
+  pipx install powerline-status
 }
 
 # Needs sudo. Only applies to machines that run Regolith.
 install_picom_package() {
-    if ! dpkg -s "$REGOLITH_COMPOSITOR_PACKAGE" >/dev/null 2>&1; then
-        echo "skip    $PICOM_PACKAGE_NAME ($REGOLITH_COMPOSITOR_PACKAGE is not installed)"
-        return
-    fi
-    rm -f "$BUILD_DIR/${PICOM_PACKAGE_NAME}_"*.deb
-    "$REPO_DIR/packages/build-deb.sh" "$PICOM_PACKAGE_DIR" "$BUILD_DIR"
-    sudo apt-get install -y --reinstall "$BUILD_DIR/${PICOM_PACKAGE_NAME}_"*_all.deb
+  if ! dpkg -s "$REGOLITH_COMPOSITOR_PACKAGE" >/dev/null 2>&1; then
+    echo "skip    $PICOM_PACKAGE_NAME ($REGOLITH_COMPOSITOR_PACKAGE is not installed)"
+    return
+  fi
+  rm -f "$BUILD_DIR/${PICOM_PACKAGE_NAME}_"*.deb
+  "$REPO_DIR/packages/build-deb.sh" "$PICOM_PACKAGE_DIR" "$BUILD_DIR"
+  sudo apt-get install -y --reinstall "$BUILD_DIR/${PICOM_PACKAGE_NAME}_"*_all.deb
 }
 
 # Top-level files are linked as-is. For skills/, commands/ and agents/,
 # each child is linked, so tools can still add their own entries there.
 install_claude_config() {
-    mkdir -p "$CLAUDE_DEST_DIR"
-    local entry name child
-    for entry in "$CLAUDE_SRC_DIR"/*; do
-        name="$(basename "$entry")"
-        if [[ -d "$entry" ]]; then
-            mkdir -p "$CLAUDE_DEST_DIR/$name"
-            for child in "$entry"/*; do
-                [[ -e "$child" ]] || continue
-                link "$child" "$CLAUDE_DEST_DIR/$name/$(basename "$child")"
-            done
-        else
-            link "$entry" "$CLAUDE_DEST_DIR/$name"
-        fi
-    done
+  mkdir -p "$CLAUDE_DEST_DIR"
+  local entry name child
+  for entry in "$CLAUDE_SRC_DIR"/*; do
+    name="$(basename "$entry")"
+    if [[ -d "$entry" ]]; then
+      mkdir -p "$CLAUDE_DEST_DIR/$name"
+      for child in "$entry"/*; do
+        [[ -e "$child" ]] || continue
+        link "$child" "$CLAUDE_DEST_DIR/$name/$(basename "$child")"
+      done
+    else
+      link "$entry" "$CLAUDE_DEST_DIR/$name"
+    fi
+  done
 }
 
 require_commands
