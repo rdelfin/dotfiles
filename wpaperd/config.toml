@@ -1,0 +1,7 @@
+[default]
+duration = "1m"
+transition-time = 2000
+mode = "center"
+
+[any]
+path = "/home/rdelfin/.local/share/shotwell/wallpaper"

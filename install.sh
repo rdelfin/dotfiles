@@ -8,20 +8,32 @@ CLAUDE_DEST_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
 OH_MY_ZSH_DIR="${ZSH:-$HOME/.oh-my-zsh}"
 OH_MY_ZSH_REPO="https://github.com/ohmyzsh/ohmyzsh.git"
 BACKUP_SUFFIX=".bak.$(date +%Y%m%d%H%M%S)"
-REQUIRED_COMMANDS=(git zsh tmux pipx)
+REQUIRED_APT_COMMANDS=(git zsh tmux pipx)
+REQUIRED_CARGO_COMMANDS=(wpaperd)
 PICOM_PACKAGE_DIR="$REPO_DIR/packages/picom-autowakeup"
 PICOM_PACKAGE_NAME="picom-autowakeup"
 REGOLITH_COMPOSITOR_PACKAGE="regolith-compositor-picom-glx"
 BUILD_DIR="$REPO_DIR/build"
 
 require_commands() {
-  local missing=()
-  for cmd in "${REQUIRED_COMMANDS[@]}"; do
-    command -v "$cmd" >/dev/null || missing+=("$cmd")
+  local missing_apt=() missing_cargo=() cmd
+  for cmd in "${REQUIRED_APT_COMMANDS[@]}"; do
+    command -v "$cmd" >/dev/null || missing_apt+=("$cmd")
   done
-  if ((${#missing[@]})); then
-    echo "Missing commands: ${missing[*]}" >&2
-    echo "Install them first, e.g.: sudo apt install git zsh tmux pipx" >&2
+  for cmd in "${REQUIRED_CARGO_COMMANDS[@]}"; do
+    command -v "$cmd" >/dev/null || missing_cargo+=("$cmd")
+  done
+  if ((${#missing_apt[@]})); then
+    echo "Missing commands: ${missing_apt[*]}" >&2
+    echo "Install them first, e.g.: sudo apt install ${missing_apt[*]}" >&2
+  fi
+  if ((${#missing_cargo[@]})); then
+    echo "Missing commands: ${missing_cargo[*]}" >&2
+    echo "Install Rust (https://rustup.rs), then run:" >&2
+    echo "  sudo apt install pkg-config libwayland-dev libegl-dev libdav1d-dev" >&2
+    echo "  cargo install --locked ${missing_cargo[*]}" >&2
+  fi
+  if ((${#missing_apt[@]} + ${#missing_cargo[@]})); then
     exit 1
   fi
 }
@@ -67,9 +79,13 @@ copy_file() {
 install_regolith_configs() {
   create_folders_if_missing "$HOME/.config/regolith3"
   create_folders_if_missing "$HOME/.config/regolith3/i3status-rust"
+  create_folders_if_missing "$HOME/.config/regolith3/sway/config.d"
+  create_folders_if_missing "$HOME/.config/wpaperd"
 
   link "$REPO_DIR/regolith/Xresources" "$HOME/.config/regolith3/Xresources"
   link "$REPO_DIR/regolith/i3status-rust/config.toml" "$HOME/.config/regolith3/i3status-rust/config.toml"
+  link "$REPO_DIR/regolith/sway/config.d/90_wpaperd" "$HOME/.config/regolith3/sway/config.d/90_wpaperd"
+  link "$REPO_DIR/wpaperd/config.toml" "$HOME/.config/wpaperd/config.toml"
 }
 
 install_shell_configs() {
