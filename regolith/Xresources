@@ -1,6 +1,9 @@
-!regolith.look.path: /usr/share/regolith-look/nevil
 regolith.look.path: /usr/share/regolith-look/dracula
+regolith.wallpaper.file: /home/rdelfin/.local/share/shotwell/wallpaper/wallpaper.xml
+regolith.lockscreen.wallpaper.file: /home/rdelfin/.local/share/shotwell/wallpaper/wallpaper.xml
 
 regolith.sway.unsupported_gpu: true
 
 wm.bar.status_config: /home/rdelfin/.config/regolith3/i3status-rust/config.toml
+
+wm.program.compositor: /home/rdelfin/.config/regolith3/picom-nudge.sh
