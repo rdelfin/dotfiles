@@ -1,6 +1,6 @@
 regolith.look.path: /usr/share/regolith-look/dracula
 regolith.wallpaper.file: /home/rdelfin/.local/share/shotwell/wallpaper/wallpaper.xml
-regolith.lockscreen.wallpaper.file: /home/rdelfin/.local/share/shotwell/wallpaper/wallpaper.xml
+regolith.lockscreen.wallpaper.file: /home/rdelfin/.local/share/shotwell/wallpaper/P1020904.jpg
 
 regolith.sway.unsupported_gpu: true
 
