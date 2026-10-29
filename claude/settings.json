@@ -10,5 +10,6 @@
         "instructionFiles": "claude-md-or-agents-md"
       }
     }
-  }
+  },
+  "theme": "dark"
 }
