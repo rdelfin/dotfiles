@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Runs wpaperd and restarts it after sway output changes. wpaperd draws nothing
+# if an output changes while it starts, e.g. when clamshell mode runs at login.
+set -euo pipefail
+
+WPAPERD="$HOME/.cargo/bin/wpaperd"
+# Output changes come in bursts, so restart only once they stop.
+SETTLE_SECONDS=2
+
+restart_wpaperd() {
+  pkill -x wpaperd || true
+  while pgrep -x wpaperd >/dev/null; do sleep 0.1; done
+  "$WPAPERD" -d
+}
+
+# Subscribe before the first start, so no output change is missed.
+exec 3< <(swaymsg -m -t subscribe '["output"]')
+restart_wpaperd
+
+while read -r -u 3 _; do
+  while read -r -u 3 -t "$SETTLE_SECONDS" _; do :; done
+  restart_wpaperd
+done

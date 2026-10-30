@@ -81,12 +81,14 @@ install_regolith_configs() {
   create_folders_if_missing "$HOME/.config/regolith3/i3status-rust"
   create_folders_if_missing "$HOME/.config/regolith3/sway/config.d"
   create_folders_if_missing "$HOME/.config/wpaperd"
+  create_folders_if_missing "$HOME/.local/bin"
 
   link "$REPO_DIR/regolith/Xresources" "$HOME/.config/regolith3/Xresources"
   link "$REPO_DIR/regolith/i3status-rust/config.toml" "$HOME/.config/regolith3/i3status-rust/config.toml"
   link "$REPO_DIR/regolith/sway/config.d/80_swaybg" "$HOME/.config/regolith3/sway/config.d/80_swaybg"
   link "$REPO_DIR/regolith/sway/config.d/90_wpaperd" "$HOME/.config/regolith3/sway/config.d/90_wpaperd"
   link "$REPO_DIR/wpaperd/config.toml" "$HOME/.config/wpaperd/config.toml"
+  link "$REPO_DIR/wpaperd/wpaperd-supervise" "$HOME/.local/bin/wpaperd-supervise"
 }
 
 install_shell_configs() {

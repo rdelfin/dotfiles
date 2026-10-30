@@ -1,1 +1,1 @@
-exec --no-startup-id $HOME/.cargo/bin/wpaperd -d
+exec --no-startup-id $HOME/.local/bin/wpaperd-supervise
